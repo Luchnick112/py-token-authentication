@@ -3,9 +3,8 @@ from datetime import datetime
 from django.db.models import F, Count
 from rest_framework import viewsets, status
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.exceptions import PermissionDenied
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from cinema.models import Genre, Actor, CinemaHall, Movie, MovieSession, Order
@@ -51,28 +50,40 @@ class NoDeleteUpdatePartialUpdateMixin:
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-class GenreViewSet(NoDeleteUpdatePartialUpdateRetrieveMixin, viewsets.ModelViewSet):
+class GenreViewSet(
+    NoDeleteUpdatePartialUpdateRetrieveMixin,
+    viewsets.ModelViewSet
+):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAdminOrIfAuthenticatedReadOnly]
 
 
-class ActorViewSet(NoDeleteUpdatePartialUpdateRetrieveMixin, viewsets.ModelViewSet):
+class ActorViewSet(
+    NoDeleteUpdatePartialUpdateRetrieveMixin,
+    viewsets.ModelViewSet
+):
     queryset = Actor.objects.all()
     serializer_class = ActorSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAdminOrIfAuthenticatedReadOnly]
 
 
-class CinemaHallViewSet(NoDeleteUpdatePartialUpdateRetrieveMixin, viewsets.ModelViewSet):
+class CinemaHallViewSet(
+    NoDeleteUpdatePartialUpdateRetrieveMixin,
+    viewsets.ModelViewSet
+):
     queryset = CinemaHall.objects.all()
     serializer_class = CinemaHallSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAdminOrIfAuthenticatedReadOnly]
 
 
-class MovieViewSet(NoDeleteUpdatePartialUpdateMixin, viewsets.ModelViewSet):
+class MovieViewSet(
+    NoDeleteUpdatePartialUpdateMixin,
+    viewsets.ModelViewSet
+):
     queryset = Movie.objects.prefetch_related("genres", "actors")
     serializer_class = MovieSerializer
     authentication_classes = [TokenAuthentication]
@@ -159,7 +170,10 @@ class OrderPagination(PageNumberPagination):
     max_page_size = 100
 
 
-class OrderViewSet(NoDeleteUpdatePartialUpdateRetrieveMixin, viewsets.ModelViewSet):
+class OrderViewSet(
+    NoDeleteUpdatePartialUpdateRetrieveMixin,
+    viewsets.ModelViewSet
+):
     queryset = Order.objects.prefetch_related(
         "tickets__movie_session__movie", "tickets__movie_session__cinema_hall"
     )
